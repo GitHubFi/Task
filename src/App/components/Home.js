@@ -21,7 +21,8 @@ class Home extends Component {
             exit: false,
             priceData: '',
             exit1: false,
-            edit_price: ''
+            edit_price: '',
+            page: 1,
 
         }
     }
@@ -33,8 +34,6 @@ class Home extends Component {
     componentDidMount() {
         this.props.GetBookList();
 
-        const len = this.props.Get_Book_List
-        console.log(len, "redux state")
     }
     updateValue = (ev, target) => {
         let obj = {};
@@ -79,7 +78,7 @@ class Home extends Component {
             exit1: false,
             priceData: price,
             name: Book_Name,
-            page: 2,
+            page: 1,
         })
     }
 
@@ -171,7 +170,7 @@ class Home extends Component {
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {this.props.Get_Book_List !== null ?
+                        {
                             items.map((value, key) => {
                                 return <Table.Row key={key}>
 
@@ -235,12 +234,12 @@ class Home extends Component {
                                     </Table.Cell>
                                 </Table.Row>
                             })
-                            : null
+                            // : null
                         }
                     </Table.Body>
                 </Table>
 
-                <Pagination activePage={page} siblingRange={1} onPageChange={this.setPageNum} totalPages={totalPages} />
+                <Pagination activePage={page} siblingRange={1}   onPageChange={this.setPageNum} totalPages={totalPages} />
 
 
             </div >
