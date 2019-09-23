@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Header, Button, Form, Table, Label, Icon, Input, Modal } from 'semantic-ui-react';
+import { Header, Button, Form, Table, Label, Icon, Input, Modal, Pagination } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { sendDataAction, GetBookListAction, } from '../../store/action';
 import dbConfig from '../../config';
@@ -27,6 +27,14 @@ class Home extends Component {
     }
     componentWillMount() {
         this.props.GetBookList();
+
+      
+    }
+    componentDidMount() {
+        this.props.GetBookList();
+
+        const len = this.props.Get_Book_List
+        console.log(len, "redux state")
     }
     updateValue = (ev, target) => {
         let obj = {};
@@ -70,7 +78,8 @@ class Home extends Component {
             exit: false,
             exit1: false,
             priceData: price,
-            name: Book_Name
+            name: Book_Name,
+            page: 2,
         })
     }
 
@@ -112,12 +121,24 @@ class Home extends Component {
     }
 
     // show = () => () => this.setState({ exit: true })
+    setPageNum = (event, { activePage }) => {
+        console.log(activePage)
+        this.setState({ page: activePage });
+    };
+
 
     render() {
         console.log(this.state.Book_Name, this.state.price)
         console.log(this.state.edit_name)
-       
-        
+        const itemsPerPage = 5;
+        const { page } = this.state;
+        const totalPages = this.props.Get_Book_List.length / itemsPerPage;
+        const items = this.props.Get_Book_List.slice(
+            (page - 1) * itemsPerPage,
+            (page - 1) * itemsPerPage + itemsPerPage
+        );
+
+
         const { exit, exit1 } = this.state
         return (
             <div style={{ paddingLeft: '5%', paddingTop: "3%", }}>
@@ -151,7 +172,7 @@ class Home extends Component {
                     </Table.Header>
                     <Table.Body>
                         {this.props.Get_Book_List !== null ?
-                            this.props.Get_Book_List.map((value, key) => {
+                            items.map((value, key) => {
                                 return <Table.Row key={key}>
 
                                     <Table.Cell>{value.Book_Name}</Table.Cell>
@@ -198,35 +219,13 @@ class Home extends Component {
                                                     </p>
                                                 </Modal.Content>
                                                 <Modal.Actions>
-                                                    {/* <Button color='red'>
-                                                        <Icon name='remove' /> No
-      </Button> */}
-                                                    {/* {
-
-                                                        this.state.exit === true ?
-                                                            <p></p> */}
                                                     : <Button color='green' onClick={this.Update}>
                                                         <Icon name='checkmark' /> Update
                                                          </Button>
-                                                    {/* } */}
+
                                                 </Modal.Actions>
                                             </Modal>
                                         </Label>
-
-
-
-                                        {/* <Input placeholder='Search...' />
-
-                                            < Label as='a' style={{ backgroundColor: "#fff" }}>
-
-                                                <Icon name='save' /> Save
-                                         </Label>
-                                            <Label as='a' style={{ backgroundColor: "#fff" }}>
-                                                <Icon name='cancel' /> cancel
-        
-                                         </Label> */}
-
-
 
                                     </Table.Cell>
                                     <Table.Cell onClick={() => this.deletebook(value.Book_Name)}>
@@ -235,16 +234,13 @@ class Home extends Component {
                               </Label>
                                     </Table.Cell>
                                 </Table.Row>
-
-
-
-
-
                             })
                             : null
                         }
                     </Table.Body>
                 </Table>
+
+                <Pagination activePage={page} siblingRange={1} onPageChange={this.setPageNum} totalPages={totalPages} />
 
 
             </div >
@@ -264,9 +260,7 @@ function mapDispatchToProps(dispatch) {
     return {
         sendData: (obj) => dispatch(sendDataAction(obj)),
         GetBookList: () => dispatch(GetBookListAction()),
-        // deteItem: (item) => dispatch(Delete_Item_Action(item))
-        // getUserListComponent: () => dispatch(getUserList())
+
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
-// export default Home

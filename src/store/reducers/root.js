@@ -3,7 +3,7 @@ import ActionTypes from '../constant';
 
 const initialState = {
 
-    Get_Book_List: null
+    Get_Book_List: []
 
 
 
